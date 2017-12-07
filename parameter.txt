@@ -1,0 +1,43 @@
+export PYTHONIOENCODING=UTF-8
+export DATA_PATH="your iwslt de-en data path"
+
+export VOCAB_SOURCE=${DATA_PATH}/vocab.de
+export VOCAB_TARGET=${DATA_PATH}/vocab.en
+export TRAIN_SOURCES=${DATA_PATH}/train.de
+export TRAIN_TARGETS=${DATA_PATH}/train.en
+export DEV_SOURCES=${DATA_PATH}/valid.de
+export DEV_TARGETS=${DATA_PATH}/valid.en
+export TEST_SOURCES=${DATA_PATH}/test.de
+export TEST_TARGETS=${DATA_PATH}/test.en
+
+export TRAIN_STEPS=1000000
+
+export MODEL_DIR=${TMPDIR:-/tmp}/nmt_conv_seq2seq
+mkdir -p $MODEL_DIR
+
+python -m bin.train \
+  --config_paths="
+      ./example_configs/conv_seq2seq.yml,
+      ./example_configs/train_seq2seq.yml,
+      ./example_configs/text_metrics_bpe.yml" \
+  --model_params "
+      vocab_source: E:\WMTData\wmt16_en_de\vocab.bpe.32000
+      vocab_target: E:\WMTData\wmt16_en_de\vocab.bpe.32000" \
+  --input_pipeline_train "
+    class: ParallelTextInputPipelineFairseq
+    params:
+      source_files:
+        - E:\WMTData\wmt16_en_de\train.tok.clean.bpe.32000.de
+      target_files:
+        - E:\WMTData\wmt16_en_de\train.tok.clean.bpe.32000.en" \
+  --input_pipeline_dev "
+    class: ParallelTextInputPipelineFairseq
+    params:
+       source_files:
+        - E:\WMTData\wmt16_en_de\newstest2016.tok.bpe.32000.de
+       target_files:
+        - E:\WMTData\wmt16_en_de\newstest2016.tok.bpe.32000.en" \
+  --batch_size 32 \
+  --eval_every_n_steps 5000 \
+  --train_steps 1000000 \
+  --output_dir E:\WMTData\model_output
