@@ -93,7 +93,8 @@ class ConvEncoderFairseq(Encoder):
   def encode(self, inputs, sequence_length):
     
     embed_size = inputs.get_shape().as_list()[-1]
-    
+    print('embed_size')
+    print(embed_size)
     if self.params["position_embeddings.enable"]:
       positions_embed = self._create_position_embedding(
           lengths=sequence_length,  # tensor, data lengths
@@ -116,7 +117,9 @@ class ConvEncoderFairseq(Encoder):
         # mapping emb dim to hid dim
         next_layer = linear_mapping_weightnorm(next_layer, nhids_list[0], dropout=self.params["embedding_dropout_keep_prob"], var_scope_name="linear_mapping_before_cnn")      
         next_layer = conv_encoder_stack(next_layer, nhids_list, kwidths_list, {'src':self.params["embedding_dropout_keep_prob"], 'hid': self.params["nhid_dropout_keep_prob"]}, mode=self.mode)
-        
+        print('before linear mpaping')
+        print(next_layer)
+        print(exit(1))
         next_layer = linear_mapping_weightnorm(next_layer, embed_size, var_scope_name="linear_mapping_after_cnn")
       ## The encoder stack will receive gradients *twice* for each attention pass: dot product and weighted sum.
       ##cnn = nn.GradMultiply(cnn, 1 / (2 * nattn))  
