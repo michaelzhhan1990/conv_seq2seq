@@ -126,7 +126,7 @@ def create_experiment(output_dir):
   Args:
     output_dir: Output directory for model checkpoints and summaries.
   """
-
+  print('run config begin training~!!!!!!!!!!!!')
   config = run_config.RunConfig(
       tf_random_seed=FLAGS.tf_random_seed,
       save_checkpoints_secs=FLAGS.save_checkpoints_secs,
@@ -136,6 +136,8 @@ def create_experiment(output_dir):
       gpu_memory_fraction=FLAGS.gpu_memory_fraction)
   config.tf_config.gpu_options.allow_growth = FLAGS.gpu_allow_growth
   config.tf_config.log_device_placement = FLAGS.log_device_placement
+
+  print('end run config , training ends here!!!!!!!!!!')
 
   train_options = training_utils.TrainOptions(
       model_class=FLAGS.model,
@@ -174,7 +176,7 @@ def create_experiment(output_dir):
       allow_smaller_final_batch=True,
       scope="dev_input_fn")
 
-
+  print('before model fn!!!!')
   def model_fn(features, labels, params, mode):
     """Builds the model graph"""
     model = _create_from_dict({
@@ -182,7 +184,7 @@ def create_experiment(output_dir):
         "params": train_options.model_params
     }, models, mode=mode)
     return model(features, labels, params)
-
+  print('after model fn!!!!!!!!!')
   estimator = tf.contrib.learn.Estimator(
       model_fn=model_fn,
       model_dir=output_dir,
@@ -204,6 +206,7 @@ def create_experiment(output_dir):
     metric = _create_from_dict(dict_, metric_specs)
     eval_metrics[metric.name] = metric
 
+  print('before run expriment!!!')
   experiment = PatchedExperiment(
       estimator=estimator,
       train_input_fn=train_input_fn,
@@ -213,7 +216,7 @@ def create_experiment(output_dir):
       eval_steps=None,
       eval_metrics=eval_metrics,
       train_monitors=train_hooks)
-
+  print('after run experiment!!!!!!!!!!!!!!!')
   return experiment
 
 
@@ -240,6 +243,7 @@ def main(_argv):
         config_flags = yaml.load(config_file)
         final_config = _deep_merge_dict(final_config, config_flags)
 
+  print('after loading config!!!!!!!!!!!!!')
   tf.logging.info("Final Config:\n%s", yaml.dump(final_config))
 
   # Merge flags with config values
@@ -267,11 +271,12 @@ def main(_argv):
   if not FLAGS.input_pipeline_dev:
     raise ValueError("You must specify input_pipeline_dev")
 
+  print('before learn_runner!!!!!')
   learn_runner.run(
       experiment_fn=create_experiment,
       output_dir=FLAGS.output_dir,
       schedule=FLAGS.schedule)
-
+  print('after learn_runner!!!!!')
 
 if __name__ == "__main__":
   tf.logging.set_verbosity(tf.logging.INFO)

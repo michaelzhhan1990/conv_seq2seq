@@ -142,6 +142,7 @@ class ModelBase(Configurable):
     """Creates the model graph. See the model_fn documentation in
     tf.contrib.learn.Estimator class for a more detailed explanation.
     """
+    print('call function is called')
     with tf.variable_scope("model"):
       with tf.variable_scope(self.name):
         return self._build(features, labels, params)

@@ -43,9 +43,11 @@ class ConvSeq2Seq(Seq2SeqModel):
   """
 
   def __init__(self, params, mode, name="conv_seq2seq"):
+    print('init conv_seq2seq class\n\n\n\n')
     super(ConvSeq2Seq, self).__init__(params, mode, name)
     self.encoder_class = locate(self.params["encoder.class"])
     self.decoder_class = locate(self.params["decoder.class"])
+    print('after init conv seq2seq !!!!!!!!')
 
   @staticmethod
   def default_params():

@@ -294,9 +294,12 @@ class Seq2SeqModel(ModelBase):
 
   def _build(self, features, labels, params):
     # Pre-process features and labels
+    print('before preprocess lookup table!!!')
     features, labels = self._preprocess(features, labels)
-
+    print("begin building!")
     encoder_output = self.encode(features, labels)
+
+    exit(1)
     decoder_output, _, = self.decode(encoder_output, features, labels)
 
     if self.mode == tf.contrib.learn.ModeKeys.INFER:
