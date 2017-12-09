@@ -298,8 +298,7 @@ class Seq2SeqModel(ModelBase):
     features, labels = self._preprocess(features, labels)
     print("begin building!")
     encoder_output = self.encode(features, labels)
-
-    exit(1)
+    print(encoder_output)
     decoder_output, _, = self.decode(encoder_output, features, labels)
 
     if self.mode == tf.contrib.learn.ModeKeys.INFER:
@@ -310,6 +309,8 @@ class Seq2SeqModel(ModelBase):
           decoder_output=decoder_output, features=features, labels=labels)
     else:
       losses, loss = self.compute_loss(decoder_output, features, labels)
+      print(decoder_output)
+      exit(1)
 
       train_op = None
       if self.mode == tf.contrib.learn.ModeKeys.TRAIN:
